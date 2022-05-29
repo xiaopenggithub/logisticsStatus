@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.logistics.mapper.LnLogisticsMapper">
+    
+    <resultMap type="LnLogistics" id="LnLogisticsResult">
+        <result property="id"    column="id"    />
+        <result property="apartmentId"    column="apartment_id"    />
+        <result property="unitId"    column="unit_id"    />
+        <result property="roomId"    column="room_id"    />
+        <result property="roomImg"    column="room_img"    />
+        <result property="status"    column="status"    />
+        <result property="userName"    column="user_name"    />
+        <result property="userPhone"    column="user_phone"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectLnLogisticsVo">
+        select id, apartment_id, unit_id, room_id, room_img, status, user_name, user_phone, create_by, create_time, update_by, update_time, remark from ln_logistics
+    </sql>
+
+    <select id="selectLnLogisticsList" parameterType="LnLogistics" resultMap="LnLogisticsResult">
+        select llg.id, llg.apartment_id, llg.room_id, llg.status,
+        llg.create_by, llg.create_time, llg.update_by, llg.update_time,couta,cout2,cout1,cout0
+        from ln_logistics llg
+        left join
+        (select apartment_id,room_id,count(id) as couta,
+        count(case when status=0 then 1 end) as cout0,
+        count(case when status=2 then 1 end) as cout2,
+        count(case when status=1 then 1 end) as cout1
+        from ln_logistic_items where TO_DAYS(create_time) = TO_DAYS(NOW()) group by apartment_id,room_id )lli on lli.room_id=llg.room_id and lli.apartment_id=llg.apartment_id
+        <where>
+            <if test="apartmentId != null  and apartmentId != ''"> and llg.apartment_id = #{apartmentId}</if>
+            <if test="unitId != null  and unitId != ''"> and unit_id = #{unitId}</if>
+            <if test="roomId != null "> and llg.room_id = #{roomId}</if>
+            <if test="roomImg != null  and roomImg != ''"> and room_img = #{roomImg}</if>
+            <if test="status != null  and status != ''"> and llg.status = #{status}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="userPhone != null  and userPhone != ''"> and user_phone = #{userPhone}</if>
+            <if test="platform != null  and platform != ''"> and TO_DAYS(create_time) = TO_DAYS(NOW())</if>
+        </where>
+        order by llg.room_id asc
+    </select>
+    <!--
+    <select id="selectLnLogisticsList" parameterType="LnLogistics" resultMap="LnLogisticsResult">
+        select llg.id, llg.apartment_id, llg.unit_id, llg.room_id, llg.room_img, llg.status, llg.user_name, llg.user_phone,
+        llg.create_by, llg.create_time, llg.update_by, llg.update_time, llg.remark,couta,cout2,cout1,cout0
+        from ln_logistics llg
+        left join
+        (select apartment_id,room_id,count(id) as couta,
+        count(case when status=0 then 1 end) as cout0,
+        count(case when status=2 then 1 end) as cout2,
+        count(case when status=1 then 1 end) as cout1
+        from ln_logistic_items where TO_DAYS(create_time) = TO_DAYS(NOW()) group by apartment_id,room_id )lli on lli.room_id=llg.room_id and lli.apartment_id=llg.apartment_id
+        <where>
+            <if test="apartmentId != null  and apartmentId != ''"> and llg.apartment_id = #{apartmentId}</if>
+            <if test="unitId != null  and unitId != ''"> and unit_id = #{unitId}</if>
+            <if test="roomId != null "> and llg.room_id = #{roomId}</if>
+            <if test="roomImg != null  and roomImg != ''"> and room_img = #{roomImg}</if>
+            <if test="status != null  and status != ''"> and llg.status = #{status}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="userPhone != null  and userPhone != ''"> and user_phone = #{userPhone}</if>
+            <if test="platform != null  and platform != ''"> and TO_DAYS(create_time) = TO_DAYS(NOW())</if>
+        </where>
+        order by llg.room_id asc
+    </select>
+    -->
+    <!--
+    <select id="selectLnLogisticsList" parameterType="LnLogistics" resultMap="LnLogisticsResult">
+        <include refid="selectLnLogisticsVo"/>
+        <where>  
+            <if test="apartmentId != null  and apartmentId != ''"> and apartment_id = #{apartmentId}</if>
+            <if test="unitId != null  and unitId != ''"> and unit_id = #{unitId}</if>
+            <if test="roomId != null "> and room_id = #{roomId}</if>
+            <if test="roomImg != null  and roomImg != ''"> and room_img = #{roomImg}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="userPhone != null  and userPhone != ''"> and user_phone = #{userPhone}</if>
+        </where>
+        order by room_id asc
+    </select>
+    -->
+    <select id="selectLnLogisticsById" parameterType="Long" resultMap="LnLogisticsResult">
+        <include refid="selectLnLogisticsVo"/>
+        <where>
+            <if test="apartmentId != null  and apartmentId != ''"> and llg.apartment_id = #{apartmentId}</if>
+            <if test="unitId != null  and unitId != ''"> and unit_id = #{unitId}</if>
+            <if test="roomId != null "> and llg.room_id = #{roomId}</if>
+            <if test="roomImg != null  and roomImg != ''"> and room_img = #{roomImg}</if>
+            <if test="status != null  and status != ''"> and llg.status = #{status}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="userPhone != null  and userPhone != ''"> and user_phone = #{userPhone}</if>
+            <if test="platform != null  and platform != ''"> and TO_DAYS(create_time) = TO_DAYS(NOW())</if>
+        </where>
+    </select>
+
+    <select id="selectOneLnLogistics" parameterType="LnLogistics" resultMap="LnLogisticsResult">
+        <include refid="selectLnLogisticsVo"/>
+        <where>
+            <if test="apartmentId != null  and apartmentId != ''"> and apartment_id = #{apartmentId}</if>
+            <if test="unitId != null  and unitId != ''"> and unit_id = #{unitId}</if>
+            <if test="roomId != null "> and room_id = #{roomId}</if>
+            <if test="roomImg != null  and roomImg != ''"> and room_img = #{roomImg}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="userPhone != null  and userPhone != ''"> and user_phone = #{userPhone}</if>
+            <if test="platform != null  and platform != ''"> and TO_DAYS(create_time) = TO_DAYS(NOW())</if>
+        </where>
+    </select>
+
+    <insert id="insertLnLogistics" parameterType="LnLogistics" useGeneratedKeys="true" keyProperty="id">
+        insert into ln_logistics
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="apartmentId != null">apartment_id,</if>
+            <if test="unitId != null">unit_id,</if>
+            <if test="roomId != null">room_id,</if>
+            <if test="roomImg != null">room_img,</if>
+            <if test="status != null">status,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="userPhone != null">user_phone,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="apartmentId != null">#{apartmentId},</if>
+            <if test="unitId != null">#{unitId},</if>
+            <if test="roomId != null">#{roomId},</if>
+            <if test="roomImg != null">#{roomImg},</if>
+            <if test="status != null">#{status},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="userPhone != null">#{userPhone},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateLnLogistics" parameterType="LnLogistics">
+        update ln_logistics
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="apartmentId != null">apartment_id = #{apartmentId},</if>
+            <if test="unitId != null">unit_id = #{unitId},</if>
+            <if test="roomId != null">room_id = #{roomId},</if>
+            <if test="roomImg != null">room_img = #{roomImg},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="userPhone != null">user_phone = #{userPhone},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteLnLogisticsById" parameterType="Long">
+        delete from ln_logistics where id = #{id}
+    </delete>
+
+    <delete id="deleteLnLogisticsByIds" parameterType="String">
+        delete from ln_logistics where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

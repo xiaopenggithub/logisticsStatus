@@ -1,0 +1,52 @@
+version: "3.5"
+
+networks:
+  network:
+    ipam:
+      driver: default
+      config:
+        - subnet: '177.217.0.0/16'
+
+services:
+  lnjyweb:
+    image: registry.cn-shanghai.aliyuncs.com/publicimg/lnjyadminweb:v1.0.0
+    container_name: lnjy_admin
+    restart: always
+    ports:
+      - '8077:8077'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - lnjyapi
+    networks:
+      network:
+        ipv4_address: 177.217.0.11
+
+  lnjyapi:
+    image: registry.cn-shanghai.aliyuncs.com/publicimg/lnjyadminapi:v1.0.0
+    container_name: lnjy_api
+    restart: always
+    ports:
+      - '8099:8080'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./logs/backend:/workspace/logs
+      - ./data/backend/media:/home/user/Desktop/zll/system
+    networks:
+      network:
+        ipv4_address: 177.217.0.12
+  lnjyh5:
+    image: registry.cn-shanghai.aliyuncs.com/publicimg/lnjyadminh5:v1.0.0
+    container_name: lnjy_h5
+    restart: always
+    ports:
+      - '8078:80'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - lnjyapi
+    networks:
+      network:
+        ipv4_address: 177.217.0.13

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+    <title>5幢 待领取快递清单</title>
+    <style type="text/css">
+        .title {
+            font-size: 30px;
+            color: brown;
+            text-align: center;
+            margin: 0px auto;
+            padding: 10px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 60px;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: column;
+            margin-top: 15px;
+        }
+
+        .floor {
+            border-bottom: 1px dashed #aaa;
+        }
+
+        .rooms {
+            margin-top: 8px;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        .room {
+            padding: 10px;
+            text-align: center;
+            display: inline-flex;
+            font-weight: bold;
+            color: brown;
+            border: 1px dashed brown;
+            margin: 8px;
+        }
+
+        .copyright {
+            width: 400px;
+            position: fixed;
+            bottom: 32px;
+            text-align: center;
+            color: brown;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="title">5幢 待领取快递清单</div>
+<div class="container" id="container">
+    <div class="row">
+        <div class="floor">
+            1F
+        </div>
+        <div class="rooms">
+            <div class="room">101</div>
+            <div class="room">101</div>
+            <div class="room">101</div>
+            <div class="room">101</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="floor">
+            1F
+        </div>
+        <div class="rooms">
+            <div class="room">101</div>
+            <div class="room">101</div>
+            <div class="room">101</div>
+            <div class="room">101</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="floor">
+            1F
+        </div>
+        <div class="rooms">
+            <div class="room">101</div>
+            <div class="room">101</div>
+            <div class="room">101</div>
+            <div class="room">101</div>
+        </div>
+    </div>
+</div>
+<div class="copyright">
+    初心龙南青年志愿者程序员研发
+</div>
+<script>
+    var list = "112,501,552,714,733,827,";
+    let rooms = list.split(',')
+    let roomArr = new Array();
+
+    let str = ""
+    for (let r of rooms) {
+        if (r) {
+            // console.log(r)
+            let k = `${parseInt(r / 100)}F`
+            if (!roomArr[k]) {
+                roomArr[k] = []
+            }
+            roomArr[k].push(r)
+        }
+    }
+    for (let o in roomArr) {
+        console.log(o)
+        let floor_rooms = roomArr[o]
+        let rooms = ''
+        for (let i of roomArr[o]) {
+            rooms += `<div class="room">${i}</div>`
+        }
+        str += `<div class="row">
+                    <div class="floor">
+                        ${o}
+                    </div>
+                    <div class="rooms">
+                        ${rooms}
+                    </div>
+                </div>`
+    }
+    document.getElementById('container').innerHTML = str
+    // console.log(roomArr)
+</script>
+</body>
+
+</html>
